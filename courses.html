@@ -4,9 +4,11 @@
     <script src="https://cdn.userway.org/widget.js" data-account="VflZTiJvoE"></script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>קורסים - לב-לבינה</title>
+    <title>קורסים וכלים דיגיטליים - לב-לבינה</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap" rel="stylesheet">
+    <!-- הוספת אייקונים כדי שיהיה יפה בכרטיס החדש -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     
     <style>
         * {
@@ -16,7 +18,6 @@
         }
 
         body {
-            /* שימוש בפונט הנקי והקריא */
             font-family: 'Assistant', sans-serif; 
             background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             color: #2c3e50;
@@ -28,15 +29,13 @@
             padding: 1rem 2rem;
             text-align: center;
             box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-            
-            /* הפיכת ההידר ל-STICKY */
             position: sticky; 
             top: 0; 
             z-index: 1000;
         }
 
         .logo {
-            max-width: 100px; /* גודל מוקטן כדי להתאים ל-Sticky Header */
+            max-width: 100px;
             height: auto;
             margin-bottom: 0;
             background: white;
@@ -52,7 +51,7 @@
         nav a {
             color: white;
             text-decoration: none;
-            margin: 0 1rem; /* צמצום המרווחים בתפריט */
+            margin: 0 1rem; 
             font-weight: 700; 
             font-size: 1rem;
             transition: all 0.3s ease;
@@ -98,6 +97,9 @@
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1);
             transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .course-card:hover {
@@ -107,36 +109,72 @@
 
         .course-image {
             width: 100%;
-            height: 300px;
-            object-fit: contain;
+            height: 250px;
+            object-fit: cover;
             background: #f8f9fa;
-            object-position: center top;
+        }
+
+        /* עיצוב מיוחד לכרטיס האפליקציה החדשה */
+        .app-card-header {
+            background: linear-gradient(45deg, #2c3e50, #4ca1af);
+            height: 250px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 5rem;
+            position: relative;
+        }
+        
+        .new-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: #ff6b6b;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: bold;
+            font-size: 0.9rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
         }
 
         .course-content {
             padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
         }
 
         .course-content h2 {
             color: #337cdc;
-            font-size: 2rem;
+            font-size: 1.8rem;
             margin-bottom: 1rem;
         }
 
         .course-content p {
             color: #666;
-            line-height: 1.8;
+            line-height: 1.6;
             margin-bottom: 1.5rem;
+            flex-grow: 1; /* כדי שהכפתור תמיד יהיה למטה */
         }
 
         .course-features {
             list-style: none;
-            margin-bottom: 1.5rem;
+            margin-bottom: 2rem;
         }
 
         .course-features li {
             padding: 0.5rem 0;
             color: #555;
+            font-size: 0.95rem;
         }
 
         .course-features li::before {
@@ -158,6 +196,13 @@
             transition: all 0.3s ease;
             text-decoration: none;
             display: inline-block;
+            text-align: center;
+            align-self: flex-start; /* יישור הכפתור */
+        }
+
+        .course-btn.app-btn {
+            background: linear-gradient(135deg, #11998e, #38ef7d); /* כפתור ירוק בולט לאפליקציה */
+            width: 100%; /* כפתור רחב למוצר החדש */
         }
 
         .course-btn:hover {
@@ -192,24 +237,49 @@
 </script>
 <body>
     <header>
-        <a href="/">
+        <a href="index.html">
             <img src="logo.png" alt="לב-לבינה" class="logo">
         </a>
+        <br>
         <nav>
+            <a href="index.html">בית</a>
             <a href="about.html">אודות</a>
             <a href="services.html">שירותים</a>
-            <a href="courses.html" class="active">קורסים</a>
+            <a href="courses.html" class="active">קורסים וכלים</a>
+            <a href="gifts.html">מתנות והשראה ✨</a> <!-- הקישור לדף החינמי -->
             <a href="contact.html">צור קשר</a>
         </nav>
     </header>
 
     <div class="container">
         <div class="page-header">
-            <h1>הקורסים וההדרכות שלי</h1>
-            <p>תכנים מעשיים, מובנים ומותאמים אישית – כי כל אחד לומד אחרת</p>
+            <h1>קורסים וכלים דיגיטליים</h1>
+            <p>הידע שלי, הקצב שלך. קורסים, אפליקציות וכלים מעשיים לשימוש בבינה מלאכותית.</p>
         </div>
 
         <div class="courses-grid">
+            
+            <!-- המוצר החדש: 101 Prompt Book -->
+            <div class="course-card">
+                <div class="app-card-header">
+                    <span class="new-badge">חדש!</span>
+                    <i class="fas fa-robot"></i> <!-- אייקון רובוט -->
+                </div>
+                <div class="course-content">
+                    <h2>101 Prompt Book</h2>
+                    <p><strong>האפליקציה שתשנה את איך שאת עובדת עם AI.</strong><br>
+                    במקום לשבור את הראש מה לכתוב ל-ChatGPT, קבלי ספרייה ענקית של הנחיות (פרומפטים) מוכנות ומקצועיות, מסודרות לפי קטגוריות.</p>
+                    <ul class="course-features">
+                        <li>מאגר ענק של פרומפטים מוכנים</li>
+                        <li>העתקה בלחיצת כפתור</li>
+                        <li>מתאים לשיווק, כתיבה, אסטרטגיה ועוד</li>
+                        <li>גישה מיידית מכל מקום</li>
+                    </ul>
+                    <a href="https://101promptbook.pnina-karayoff.com/" target="_blank" class="course-btn app-btn">לרכישה וכניסה מיידית &larr;</a>
+                </div>
+            </div>
+
+            <!-- קורס קיים 1 -->
             <div class="course-card">
                 <img src="course-ai.jpg" alt="קורס AI למטפלים" class="course-image">
                 <div class="course-content">
@@ -225,6 +295,7 @@
                 </div>
             </div>
 
+            <!-- קורס קיים 2 -->
             <div class="course-card">
                 <img src="course-content.jpg" alt="יצירת תוכן חכם" class="course-image">
                 <div class="course-content">
@@ -240,6 +311,7 @@
                 </div>
             </div>
 
+            <!-- קורס קיים 3 -->
             <div class="course-card">
                 <img src="course-private.jpg" alt="ליווי פרטני" class="course-image">
                 <div class="course-content">
@@ -254,6 +326,7 @@
                     <a href="contact.html" class="course-btn">בואו נדבר</a>
                 </div>
             </div>
+
         </div>
     </div>
 
