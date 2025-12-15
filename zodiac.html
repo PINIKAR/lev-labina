@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>מסרים מהכוכבים | לב לבינה</title>
+    
+    <!-- ייבוא פונט נעים בעברית -->
+    <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- טעינת Tailwind CSS לעיצוב -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- טעינת React ו-Babel כדי להריץ את האפליקציה בדפדפן -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+    <style>
+        body { font-family: 'Heebo', sans-serif; }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        /* התאמה לאתר שלך - כפתור חזרה */
+        .back-button {
+            transition: all 0.3s ease;
+        }
+        .back-button:hover {
+            transform: translateX(5px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50">
+
+    <!-- כאן נכנסת האפליקציה -->
+    <div id="root"></div>
+
+    <script type="text/babel">
+        // אייקונים בפורמט SVG
+        const Icons = {
+            Sparkles: () => <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>,
+            Moon: () => <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>,
+            Star: ({size = 20, className}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>,
+            Flame: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.6-3.3.3.9.8 1.8 1.9 2.8z"/></svg>,
+            Droplets: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.8-2.29 3.76S3 11.1 3 12.25c0 2.22 1.8 4.05 4 4.05z"/><path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/></svg>,
+            Mountain: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m8 3 4 8 5-5 5 15H2L8 3z"/></svg>,
+            Wind: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2"/><path d="M9.6 4.6A2 2 0 1 1 11 8H2"/><path d="M12.6 19.4A2 2 0 1 0 14 16H2"/></svg>,
+            Heart: ({size=14, className}) => <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>,
+            Home: () => <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        };
+
+        const ZodiacCard = ({ sign }) => {
+            const [isFlipped, setIsFlipped] = React.useState(false);
+
+            const getElementStyle = (element) => {
+                switch (element) {
+                    case 'אש': return { icon: <Icons.Flame />, color: 'text-orange-500', bg: 'bg-orange-50' };
+                    case 'מים': return { icon: <Icons.Droplets />, color: 'text-blue-500', bg: 'bg-blue-50' };
+                    case 'אדמה': return { icon: <Icons.Mountain />, color: 'text-emerald-500', bg: 'bg-emerald-50' };
+                    case 'אוויר': return { icon: <Icons.Wind />, color: 'text-sky-500', bg: 'bg-sky-50' };
+                    default: return { icon: <Icons.Star />, color: 'text-gray-500', bg: 'bg-gray-50' };
+                }
+            };
+
+            const style = getElementStyle(sign.element);
+
+            return (
+                <div 
+                className="group h-96 w-full perspective-1000 cursor-pointer"
+                onClick={() => setIsFlipped(!isFlipped)}
+                >
+                <div className={`relative h-full w-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
+                    
+                    {/* Front of Card */}
+                    <div className="absolute inset-0 h-full w-full bg-white rounded-2xl shadow-xl border-2 border-purple-100 p-6 backface-hidden flex flex-col items-center justify-between text-center overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-purple-300 via-pink-300 to-indigo-300"></div>
+                    
+                    <div className="mt-4">
+                        <span className={`inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold ${style.bg} ${style.color}`}>
+                        {style.icon} {sign.element}
+                        </span>
+                    </div>
+
+                    <div className="flex flex-col items-center">
+                        <h2 className="text-3xl font-bold text-slate-800 mb-1">{sign.name}</h2>
+                        <p className="text-sm text-slate-400 mb-4">{sign.date}</p>
+                        <div className="text-6xl mb-4 opacity-80 filter drop-shadow-md">{sign.emoji}</div>
+                    </div>
+
+                    <div className="bg-slate-50 p-4 rounded-xl w-full border border-slate-100">
+                        <h3 className="text-xs uppercase tracking-widest text-slate-400 font-bold mb-1">הידוע והמוכר</h3>
+                        <p className="text-slate-700 font-medium leading-snug text-sm">{sign.known}</p>
+                    </div>
+                    
+                    <div className="text-xs text-purple-400 mt-2 flex items-center justify-center gap-1 animate-pulse">
+                        <Icons.Sparkles /> לחצי כדי לגלות את הקסם
+                    </div>
+                    </div>
+
+                    {/* Back of Card */}
+                    <div className="absolute inset-0 h-full w-full bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl shadow-xl p-6 backface-hidden rotate-y-180 text-white flex flex-col justify-between relative overflow-hidden">
+                    <div className="absolute top-[-20px] right-[-20px] opacity-10"><Icons.Moon /></div>
+
+                    <div>
+                        <div className="flex justify-between items-center mb-4 border-b border-white/20 pb-2">
+                        <span className="font-bold text-lg">{sign.name}</span>
+                        <Icons.Star className="text-yellow-300" />
+                        </div>
+
+                        <div className="mb-5">
+                        <h3 className="text-xs uppercase tracking-widest text-purple-200 font-bold mb-1 flex items-center gap-1">
+                            <Icons.Heart size={12} /> משהו מוזר
+                        </h3>
+                        <p className="text-sm leading-relaxed text-purple-50 font-light">{sign.weird}</p>
+                        </div>
+
+                        <div>
+                        <h3 className="text-xs uppercase tracking-widest text-yellow-200 font-bold mb-1 flex items-center gap-1">
+                            <Icons.Sparkles size={12} /> תחזית 2026
+                        </h3>
+                        <p className="text-sm leading-relaxed text-white font-medium">{sign.forecast}</p>
+                        </div>
+                    </div>
+
+                    <div className="text-center mt-auto pt-2 border-t border-white/10">
+                        <span className="text-xs text-purple-200">✨ השנה שלך זורחת ✨</span>
+                    </div>
+                    </div>
+
+                </div>
+                </div>
+            );
+        };
+
+        const App = () => {
+            const zodiacs = [
+                { name: "טלה", date: "21.3 - 19.4", element: "אש", emoji: "♈", known: "מנהיגות טבעית, אנרגיה מתפרצת, אומץ לב וחוסר סבלנות.", weird: "יש להם נטייה מוזרה לקבל מכות בראש או לסבול ממיגרנות יותר מכולם. והם הולכים הכי מהר ברחוב.", forecast: "2026 מביאה פריצת דרך בקריירה שתמיד חלמת עליה. זה הזמן לדרוש את כס המלכות שלך." },
+                { name: "שור", date: "20.4 - 20.5", element: "אדמה", emoji: "♉", known: "יציבות, נאמנות, אהבה לפינוקים ונוחות, ועקשנות אגדית.", weird: "יש להם חוש מישוש מפותח בצורה קיצונית. שור יכול לדעת אם הבד איכותי רק מלהסתכל עליו.", forecast: "השפע הכלכלי דופק בדלת ב-2026. השקעה ישנה מבשילה ומביאה נחת ושלווה." },
+                { name: "תאומים", date: "21.5 - 20.6", element: "אוויר", emoji: "♊", known: "תקשורתיים, סקרנים, משתנים במהירות ובעלי יכולת שכלית חריפה.", weird: "רבים מהם דו-צדדיים פיזית (כותבים ב-2 הידיים) או מדברים לעצמם בקול רם כדי לסדר מחשבות.", forecast: "2026 היא שנת הלימודים. ספר, פודקאסט או קורס שתצרי יהפוך להצלחה מסחררת." },
+                { name: "סרטן", date: "21.6 - 22.7", element: "מים", emoji: "♋", known: "רגישים, אימהיים, מגוננים על הבית והמשפחה ובעלי אינטואיציה.", weird: "אוגרים כפייתיים של זכרונות. סרטן מסוגל לשמור כרטיס קולנוע משנת 1999 כי היה לו ריח של פופקורן.", forecast: "ב-2026 הבית הפיזי או הפנימי עובר שיפוץ עומק. את משחררת עוגנים ישנים ומוצאת ביטחון." },
+                { name: "אריה", date: "23.7 - 22.8", element: "אש", emoji: "♌", known: "כריזמטיים, נדיבים, אוהבים להיות במרכז הבמה ודרמטיים.", weird: "קשר מיסטי לשיער. יום שיער רע יכול להשבית אותם לחלוטין. בודקים השתקפות בכל חלון ראווה.", forecast: "היצירתיות מתפוצצת ב-2026. זמן לאהבה גדולה מהחיים או פרויקט אומנותי שישים אותך במרכז." },
+                { name: "בתולה", date: "23.8 - 22.9", element: "אדמה", emoji: "♍", known: "פרפקציוניסטים, אנליטיים, מסודרים ועוזרים לזולת.", weird: "מזהים תמונה עקומה מקילומטר. אובססיה מוזרה לריחות של ניקיון או מוצרי היגיינה ספציפיים.", forecast: "2026 מביאה ריפוי. בעיה שהציקה נפתרת, ואת מוצאת שגרה חדשה ומאוזנת שעושה לך פלאים." },
+                { name: "מאזניים", date: "23.9 - 22.10", element: "אוויר", emoji: "♎", known: "דיפלומטיים, שוחרים שלום, אסתטיים מאוד ומתקשים בהחלטות.", weird: "אלופים בויכוחים. יכולים להחליף צד באמצע ויכוח רק כדי לשמור על האיזון, וזה משגע את כולם.", forecast: "הזוגיות תופסת מקום מרכזי ב-2026. קשר קיים עולה מדרגה או שותפות עסקית מפתיעה." },
+                { name: "עקרב", date: "23.10 - 21.11", element: "מים", emoji: "♏", known: "מסתוריים, אינטנסיביים, נאמנים בטירוף ובעלי יכולת התחדשות.", weird: "מבט רנטגן. עקרבים נוטים לא למצמץ כשהם מרוכזים במישהו, מה שגורם לצד השני להרגיש שקופים.", forecast: "טרנספורמציה רוחנית ב-2026. את משילה את העור הישן ונולדת מחדש חזקה ומגנטית מתמיד." },
+                { name: "קשת", date: "22.11 - 21.12", element: "אש", emoji: "♐", known: "אופטימיים, אוהבי חופש, פילוסופים וישירים עד חוסר טאקט.", weird: "מגושמים. הם מסתכלים כל כך רחוק אל האופק שהם נתקעים ברהיטים שלידם באופן קבוע.", forecast: "2026 פותחת דלתות מעבר לים. נסיעה גדולה או רילוקיישן ירחיבו את אופקייך בצורה שלא דמיינת." },
+                { name: "גדי", date: "22.12 - 19.1", element: "אדמה", emoji: "♑", known: "שאפתנים, אחראים, רציניים ובעלי משמעת עצמית ברזל.", weird: "מזדקנים הפוך. כילדים היו מבוגרים אחראיים, וככל שמתבגרים הופכים לקלילים ושובבים יותר.", forecast: "העבודה הקשה משתלמת ב-2026. את מקבלת הכרה רשמית, פרס או תואר שביססת בעמל רב." },
+                { name: "דלי", date: "20.1 - 18.2", element: "אוויר", emoji: "♒", known: "מקוריים, מורדים, הומניטריים ובלתי צפויים.", weird: "תמיד קר להם בידיים וברגליים כי הם חיים בתוך הראש שלהם ושוכחים שיש להם גוף פיזי.", forecast: "ב-2026 את מובילה מהפכה בקהילה. הרעיונות המקוריים שלך הופכים למיינסטרים וכולם מקשיבים." },
+                { name: "דגים", date: "19.2 - 20.3", element: "מים", emoji: "♓", known: "חולמניים, אמפתיים, אומנותיים ולעיתים מנותקים מהמציאות.", weird: "סופגים רגשות כמו ספוג. יכולים להיכנס לחדר עצוב ולהיות מדוכאים בלי להבין שזה לא שלהם.", forecast: "האינטואיציה בשיאה ב-2026. חלום שחלמת שנים מתגשם, ואת מוצאת חיבור רוחני שנותן שקט." }
+            ];
+
+            return (
+                <div className="min-h-screen pb-10" dir="rtl">
+                    
+                    {/* חזרה לאתר הראשי */}
+                    <div className="absolute top-4 right-4 z-10">
+                        <a href="index.html" className="flex items-center gap-2 text-purple-600 font-bold bg-white/80 px-4 py-2 rounded-full shadow-sm hover:shadow-md back-button no-underline">
+                            <Icons.Home size={18} />
+                            חזרה לאתר
+                        </a>
+                    </div>
+
+                    {/* Header */}
+                    <header className="py-12 text-center px-4">
+                        <div className="flex justify-center mb-4">
+                            <div className="text-purple-400 animate-bounce"><Icons.Moon /></div>
+                            <div className="text-yellow-400 mt-6 -mr-4"><Icons.Star /></div>
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-pink-500 mb-3 drop-shadow-sm">
+                        גלגל המזלות המיסטי
+                        </h1>
+                        <p className="text-lg text-slate-600 max-w-2xl mx-auto font-light">
+                        גלי את הסודות הקטנים, הקסם הנסתר והעתיד המנצנץ לשנת 2026.
+                        <br />
+                        <span className="text-sm text-purple-400 mt-2 block font-medium">(לחצי על הקלף כדי לגלות את הסוד)</span>
+                        </p>
+                    </header>
+
+                    {/* Grid */}
+                    <main className="container mx-auto px-4 pb-20">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+                        {zodiacs.map((sign, index) => (
+                            <ZodiacCard key={index} sign={sign} />
+                        ))}
+                        </div>
+                    </main>
+
+                    {/* Footer */}
+                    <footer className="text-center py-8 text-slate-400 text-sm border-t border-purple-100 bg-white/50 backdrop-blur-sm">
+                        <p className="flex items-center justify-center gap-2">
+                        נכתב באהבה ומתוך הכוכבים <span className="text-pink-400">♥</span>
+                        </p>
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
