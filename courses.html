@@ -100,6 +100,7 @@
             display: flex;
             flex-direction: column;
             height: 100%;
+            position: relative; /* הוספתי כדי שאפשר יהיה למקם את התגית "חדש" */
         }
 
         .course-card:hover {
@@ -114,18 +115,6 @@
             background: #f8f9fa;
         }
 
-        /* עיצוב מיוחד לכרטיס האפליקציה החדשה */
-        .app-card-header {
-            background: linear-gradient(45deg, #2c3e50, #4ca1af);
-            height: 250px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 5rem;
-            position: relative;
-        }
-        
         .new-badge {
             position: absolute;
             top: 20px;
@@ -138,6 +127,7 @@
             font-size: 0.9rem;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             animation: pulse 2s infinite;
+            z-index: 10; /* מוודא שזה מעל התמונה */
         }
 
         @keyframes pulse {
@@ -261,10 +251,11 @@
             
             <!-- המוצר החדש: 101 Prompt Book -->
             <div class="course-card">
-                <div class="app-card-header">
-                    <span class="new-badge">חדש!</span>
-                    <i class="fas fa-robot"></i> <!-- אייקון רובוט -->
-                </div>
+                <span class="new-badge">חדש!</span>
+                <!-- כאן הכנסתי את התמונה במקום האייקון -->
+                <!-- זכרי להעלות תמונה בשם prompt-book.jpg לגיטהאב -->
+                <img src="prompt-book.jpg" alt="101 Prompt Book" class="course-image">
+                
                 <div class="course-content">
                     <h2>101 Prompt Book</h2>
                     <p><strong>האפליקציה שתשנה את איך שאת עובדת עם AI.</strong><br>
